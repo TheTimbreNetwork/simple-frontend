@@ -2,28 +2,7 @@
 
 import { useState } from "react";
 
-import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, zora } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-
-const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, zora],
-  [publicProvider()]
-);
-const { connectors } = getDefaultWallets({
-  appName: "My RainbowKit App",
-  projectId: "09c8084cdc92e99e928f07f537d62ad1",
-  chains,
-});
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-});
 
 export default function Home() {
   const [data, setData] = useState("");
@@ -46,30 +25,26 @@ export default function Home() {
   }
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <main className="flex flex-col items-center justify-between py-4">
-          <ConnectButton />
-          <div className="py-4 px-10 flex flex-row w-full justify-center items-center">
-            <input
-              placeholder="Post a review"
-              onChange={(e) => setData(e.target.value)}
-              className="border-solid border-2 border-gray-600 text-black px-2 py-1 w-3/5"
-            />
-            <button
-              onClick={upload}
-              className="text-black bg-white mx-2 px-12 w-1/5 border-solid border-2 border-gray-300"
-            >
-              Upload text
-            </button>
-          </div>
-          {transaction && (
-            <div className="text-black bg-white mt-2 px-12">
-              Transaction: {transaction}
-            </div>
-          )}
-        </main>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <main className="flex flex-col items-center justify-between py-4">
+      <ConnectButton />
+      <div className="py-4 px-10 flex flex-row w-full justify-center items-center">
+        <input
+          placeholder="Post a review"
+          onChange={(e) => setData(e.target.value)}
+          className="border-solid border-2 border-gray-600 text-black px-2 py-1 w-3/5"
+        />
+        <button
+          onClick={upload}
+          className="text-black bg-white mx-2 px-12 w-1/5 border-solid border-2 border-gray-300"
+        >
+          Upload text
+        </button>
+      </div>
+      {transaction && (
+        <div className="text-black bg-white mt-2 px-12">
+          Transaction: {transaction}
+        </div>
+      )}
+    </main>
   );
 }
