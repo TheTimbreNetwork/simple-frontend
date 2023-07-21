@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useContractRead } from "wagmi";
+
+import Simple1ABI from "./abi/Simple1ABI.json";
 
 export default function Home() {
   const [data, setData] = useState("");
@@ -23,6 +25,19 @@ export default function Home() {
       console.log({ err });
     }
   }
+
+  const { data: newData } = useContractRead({
+    address: "0xf2314b5138C246930d7d330873124C18610cD7ee",
+    abi: Simple1ABI,
+    functionName: "reviewerToReview",
+    args: ["0x27f940eb8fa6740e38a20214592cECE329BDe8Df"],
+  });
+
+  useEffect(() => {
+    if (newData) {
+      console.log(newData);
+    }
+  }, [newData]);
 
   return (
     <main className="flex flex-col items-center justify-between py-4">

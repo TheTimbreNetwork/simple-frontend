@@ -7,14 +7,21 @@ import { Inter } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, zora } from "wagmi/chains";
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  zora,
+  polygonMumbai,
+} from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const { chains, publicClient } = configureChains(
-  [polygon, mainnet, optimism, arbitrum],
+  [polygon, mainnet, optimism, arbitrum, polygonMumbai],
   [publicProvider()]
 );
 const { connectors } = getDefaultWallets({
