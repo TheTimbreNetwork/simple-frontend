@@ -5,11 +5,16 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useContractRead } from "wagmi";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 
+import RetrieveReview from "./components/RetrieveReview";
+
 import Simple1ABI from "./abi/Simple1ABI.json";
 
 export default function Home() {
   const [data, setData] = useState("");
   const [transaction, setTransaction] = useState("");
+  const [uploadedText, setUploadedText] = useState(false);
+  const [postedReview, setPostedReview] = useState(false);
+  const [callRetrieveReview, setCallRetrieveReview] = useState(false);
 
   async function upload() {
     if (!data) return;
@@ -22,6 +27,7 @@ export default function Home() {
       const json = await response.json();
       console.log("json:", json);
       setTransaction(json.txId);
+      setUploadedText(true);
     } catch (err) {
       console.log({ err });
     }
@@ -38,12 +44,14 @@ export default function Home() {
     functionName: "postReview",
   });
 
-  // const { data: newData } = useContractRead({
-  //   address: "0xf2314b5138C246930d7d330873124C18610cD7ee",
-  //   abi: Simple1ABI,
-  //   functionName: "reviewerToReview",
-  //   args: ["0x27f940eb8fa6740e38a20214592cECE329BDe8Df"],
-  // });
+  function postReviewToPolygon() {
+    write({ args: [transaction] });
+    setPostedReview(true);
+  }
+
+  function retrieveReviewFromPolygon() {
+    setCallRetrieveReview(true);
+  }
 
   // useEffect(() => {
   //   if (newData) {
@@ -62,19 +70,36 @@ export default function Home() {
         />
         <button
           onClick={upload}
-          className="text-black bg-white mx-2 px-12 w-1/5 border-solid border-2 border-gray-300"
+          className="text-black bg-white mx-2 px-12 py-1 w-1/5 border-solid border-2 border-gray-300 rounded-lg"
         >
-          Upload text
+          Upload review to Arweave
         </button>
       </div>
       {transaction && (
         <div className="text-black bg-white mt-2 px-12">
-          Transaction: {transaction}
+          Transaction:{" "}
+          <a className="text-blue-600" href={transaction}>
+            {transaction}
+          </a>
         </div>
       )}
-      <button onClick={() => write({ args: ["helloworld123"] })}>
-        Post Review
-      </button>
+      {uploadedText && (
+        <button
+          className="my-4 p-2 border-solid border-2 border-gray-600 rounded-lg"
+          onClick={postReviewToPolygon}
+        >
+          Post review to Polygon
+        </button>
+      )}
+      {postedReview && (
+        <button
+          className="my-4 p-2 border-solid border-2 border-gray-600 rounded-lg"
+          onClick={retrieveReviewFromPolygon}
+        >
+          Retrieve your review from Polygon
+        </button>
+      )}
+      {callRetrieveReview && <RetrieveReview />}
     </main>
   );
 }
